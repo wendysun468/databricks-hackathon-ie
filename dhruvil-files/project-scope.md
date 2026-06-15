@@ -6,6 +6,8 @@ GeoGap Planner is a geospatial expansion-planning app for doctors and hospital o
 
 It also includes a coarse affordability lens so users can understand whether a location is more likely to fit a lower-cost, mixed-cost, or premium care model.
 
+For maternal care, the app can also surface a modeled delivery-cost view using district-level out-of-pocket expenditure data and insurance coverage context.
+
 The app is designed to answer:
 
 - Where is a specialty under-served?
@@ -13,6 +15,7 @@ The app is designed to answer:
 - How strong is the evidence that a facility truly offers the specialty?
 - Which locations are the best candidates for expansion?
 - Which candidate areas appear more affordable for the local patient base?
+- For maternal care, what does delivery affordability look like in this district?
 
 ## Target Users
 
@@ -178,6 +181,22 @@ The goal is to label areas as:
 - likely premium
 
 This is a directional planning signal, not a treatment price engine.
+
+### 10. Maternal Care Affordability
+
+When the user selects maternal care or maternity-related specialties, show a delivery-cost model using:
+
+- `average_out_of_pocket_expenditure_per_delivery_in_a_public_fac`
+- district health insurance coverage
+- public vs private facility mix
+- maternal health burden indicators
+
+The app should help users:
+
+- identify districts where childbirth care may be expensive for patients
+- compare public-facility delivery affordability across locations
+- recommend lower-cost or better-covered care options where appropriate
+- expand maternal care in a way that is more accessible to local patients
 
 ## Recommended User Workflow
 

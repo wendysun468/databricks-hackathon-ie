@@ -15,6 +15,8 @@ The app helps users identify underserved areas for a chosen specialty or multi-s
 - evidence-backed trust scoring
 - a lightweight affordability lens
 
+For maternal care, the affordability lens also uses delivery-cost modeling based on district-level out-of-pocket expenditure per delivery in public facilities.
+
 This is not a live vacancy or appointment-availability product. It infers expansion opportunity from the data we have.
 
 ## 2. Data Available Today
@@ -79,6 +81,7 @@ The MVP should answer:
 - How strong is the evidence that a facility actually offers the selected specialty?
 - Which areas should a doctor or hospital group investigate first?
 - Which candidate areas appear more affordable for the local patient base?
+- For maternal care, what does delivery affordability look like in this district?
 
 ## 4. MVP Features We Can Build Now
 
@@ -150,7 +153,22 @@ Suggested labels:
 
 This should be presented as a directional planning signal, not a price quote or treatment-cost engine.
 
-### F. Facility Detail View
+### F. Maternal Care Affordability
+
+When the user selects maternal care or maternity-related specialties, show a modeled delivery-cost view using:
+
+- `average_out_of_pocket_expenditure_per_delivery_in_a_public_fac`
+- district health insurance coverage
+- public vs private provider mix
+- maternal health burden indicators
+
+This view should help the user:
+
+- understand how much childbirth care may cost patients in a district
+- compare public-facility delivery affordability across regions
+- prefer lower-cost or better-covered service areas when planning maternal care expansion
+- communicate how the practice can serve patients better on cost and access
+### G. Facility Detail View
 
 For any facility, show:
 
@@ -161,7 +179,7 @@ For any facility, show:
 - source URLs
 - trust summary
 
-### G. Shortlist and Notes
+### H. Shortlist and Notes
 
 Allow users to save candidate locations and add notes such as:
 
@@ -170,7 +188,7 @@ Allow users to save candidate locations and add notes such as:
 - “strong demand, weak supply”
 - “affordability looks favorable”
 
-### H. Data Quality Flags
+### I. Data Quality Flags
 
 Surface suspicious or low-confidence records:
 
@@ -180,7 +198,7 @@ Surface suspicious or low-confidence records:
 - incomplete contact fields
 - weak or unsupported claims
 
-### I. District Demand Lens
+### J. District Demand Lens
 
 Show district-level health context to support expansion decisions, for example:
 
@@ -190,7 +208,7 @@ Show district-level health context to support expansion decisions, for example:
 - anemia burden
 - child health burden
 
-### J. Affordability Context
+### K. Affordability Context
 
 Show affordability-related context at the district or facility level, for example:
 
