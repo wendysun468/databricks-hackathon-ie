@@ -19,6 +19,11 @@ All outputs go to:
 This shared schema now exists in the Databricks workspace and is the team-wide target for the
 pipeline outputs.
 
+The WorldPop population source is also stored here:
+
+- raw file: `dbfs:/Volumes/workspace/affordability_friction_planner/worldpop_raw/ind_pop_2026_CN_1km_R2025A_UA_v1.tif`
+- metadata table: `workspace.affordability_friction_planner.worldpop_india_population_metadata`
+
 Planned tables:
 
 - `bronze_facilities_raw`
@@ -53,5 +58,7 @@ databricks bundle run affordability_friction_planner_etl -t dev --profile codex-
 - The pipeline reads the live Unity Catalog tables and writes cleaned/feature tables back to
   Unity Catalog.
 - The shared output location is `workspace.affordability_friction_planner`.
+- WorldPop India 2026 1km population data is available in the shared volume for population
+  normalization and observability scoring.
 - The OSM/OSRM step is best-effort; the fallback keeps the gold table usable if routing is slow
   or unavailable.
