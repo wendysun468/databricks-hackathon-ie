@@ -1,0 +1,3 @@
+SELECT *
+FROM databricks_virtue_foundation_dataset_dais_2026.virtue_foundation_dataset.india_post_pincode_directory
+LIMIT 40;

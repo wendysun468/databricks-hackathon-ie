@@ -151,7 +151,7 @@ export function bandLabel(band: CareGapScore['band']) {
   }
 }
 
-export const sampleScenarios: CareGapScenario[] = [
+const sampleScenarioInputs: CareGapInputs[] = [
   {
     districtName: 'Purnia',
     specialty: 'Maternal delivery care',
@@ -161,9 +161,6 @@ export const sampleScenarios: CareGapScenario[] = [
     insuranceCoveragePct: 21,
     burdenScore: 84,
     facilityDensity: 0.4,
-    total: 0,
-    band: 'low',
-    summary: '',
   },
   {
     districtName: 'Kolkata fringe',
@@ -174,9 +171,6 @@ export const sampleScenarios: CareGapScenario[] = [
     insuranceCoveragePct: 48,
     burdenScore: 52,
     facilityDensity: 2.1,
-    total: 0,
-    band: 'low',
-    summary: '',
   },
   {
     districtName: 'Rural referral belt',
@@ -187,11 +181,10 @@ export const sampleScenarios: CareGapScenario[] = [
     insuranceCoveragePct: 14,
     burdenScore: 91,
     facilityDensity: 0.2,
-    total: 0,
-    band: 'low',
-    summary: '',
   },
-].map((scenario) => {
+];
+
+export const sampleScenarios: CareGapScenario[] = sampleScenarioInputs.map((scenario) => {
   const scored = scoreCareGap(scenario);
   return {
     ...scenario,
