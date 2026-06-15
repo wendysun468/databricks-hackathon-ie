@@ -1,3 +1,5 @@
 .databrickscfg.local
 .tmp-databrickscfg
 .tmp-databrickscfg.bak
+__pycache__/
+*.pyc
