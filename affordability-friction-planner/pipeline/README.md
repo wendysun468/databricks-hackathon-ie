@@ -16,6 +16,9 @@ All outputs go to:
 - catalog: `workspace`
 - schema: `affordability_friction_planner`
 
+This shared schema now exists in the Databricks workspace and is the team-wide target for the
+pipeline outputs.
+
 Planned tables:
 
 - `bronze_facilities_raw`
@@ -49,5 +52,6 @@ databricks bundle run affordability_friction_planner_etl -t dev --profile codex-
 - No source data is stored in git.
 - The pipeline reads the live Unity Catalog tables and writes cleaned/feature tables back to
   Unity Catalog.
+- The shared output location is `workspace.affordability_friction_planner`.
 - The OSM/OSRM step is best-effort; the fallback keeps the gold table usable if routing is slow
   or unavailable.
