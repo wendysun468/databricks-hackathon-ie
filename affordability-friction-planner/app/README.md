@@ -15,11 +15,11 @@ affordability, and evidence strength all work against access.
 
 Defaults are already wired in `package.json`:
 
-1. Make sure the repo-root Databricks config file exists at `../../.databrickscfg.local`.
+1. By default the app uses your standard Databricks CLI config (`~/.databrickscfg`).
 2. If needed, create or refresh the profile:
 
 ```bash
-databricks auth login --host https://dbc-d71b1eb4-7457.cloud.databricks.com --profile codex-file
+databricks auth login --host https://dbc-d71b1eb4-7457.cloud.databricks.com --profile affordability-friction-planner
 ```
 
 3. Run the app from `affordability-friction-planner/app`:
@@ -31,7 +31,7 @@ npm run dev
 Optional overrides:
 
 - `DATABRICKS_WAREHOUSE_ID` for analytics queries
-- `DATABRICKS_CONFIG_FILE` if you want a different local auth file
+- `DATABRICKS_CONFIG_FILE` if you want to use a non-default auth file
 - `DATABRICKS_CONFIG_PROFILE` if you want a different profile name
 - `LAKEBASE_ENDPOINT`, `PGHOST`, and `PGDATABASE` for Lakebase
 

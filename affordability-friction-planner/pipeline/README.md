@@ -42,9 +42,9 @@ so the tables still materialize.
 This project is structured as a Databricks bundle. Deploy it, then start the pipeline update.
 
 ```bash
-databricks bundle validate --profile codex-file
-databricks bundle deploy -t dev --profile codex-file
-databricks bundle run affordability_friction_planner_etl -t dev --profile codex-file
+databricks bundle validate --profile affordability-friction-planner
+databricks bundle deploy -t dev --profile affordability-friction-planner
+databricks bundle run affordability_friction_planner_etl -t dev --profile affordability-friction-planner
 ```
 
 ## Notes

@@ -4,8 +4,8 @@
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "start": "DATABRICKS_APP_PORT=${DATABRICKS_APP_PORT:-8000} DATABRICKS_CONFIG_FILE=${DATABRICKS_CONFIG_FILE:-../../.databrickscfg.local} DATABRICKS_CONFIG_PROFILE=${DATABRICKS_CONFIG_PROFILE:-codex-file} DATABRICKS_WAREHOUSE_ID=${DATABRICKS_WAREHOUSE_ID:-a0894632bfd69ff2} NODE_ENV=production node --env-file-if-exists=./.env ./dist/server.js",
-    "dev": "DATABRICKS_APP_PORT=${DATABRICKS_APP_PORT:-8000} DATABRICKS_CONFIG_FILE=${DATABRICKS_CONFIG_FILE:-../../.databrickscfg.local} DATABRICKS_CONFIG_PROFILE=${DATABRICKS_CONFIG_PROFILE:-codex-file} DATABRICKS_WAREHOUSE_ID=${DATABRICKS_WAREHOUSE_ID:-a0894632bfd69ff2} NODE_ENV=development tsx watch --tsconfig ./tsconfig.server.json --env-file-if-exists=./.env ./server/server.ts",
+    "start": "DATABRICKS_APP_PORT=${DATABRICKS_APP_PORT:-8000} DATABRICKS_CONFIG_PROFILE=${DATABRICKS_CONFIG_PROFILE:-affordability-friction-planner} DATABRICKS_WAREHOUSE_ID=${DATABRICKS_WAREHOUSE_ID:-a0894632bfd69ff2} NODE_ENV=production node --env-file-if-exists=./.env ./dist/server.js",
+    "dev": "DATABRICKS_APP_PORT=${DATABRICKS_APP_PORT:-8000} DATABRICKS_CONFIG_PROFILE=${DATABRICKS_CONFIG_PROFILE:-affordability-friction-planner} DATABRICKS_WAREHOUSE_ID=${DATABRICKS_WAREHOUSE_ID:-a0894632bfd69ff2} NODE_ENV=development tsx watch --tsconfig ./tsconfig.server.json --env-file-if-exists=./.env ./server/server.ts",
     "build:client": "tsc -b tsconfig.client.json && vite build --config client/vite.config.ts",
     "build:server": "tsc -b tsconfig.server.json && tsdown -c tsdown.server.config.ts",
     "build": "npm run build:server && npm run build:client",
@@ -24,7 +24,7 @@
     "prebuild": "npm run sync && npm run typegen",
     "predev": "npm run sync && npm run typegen",
     "sync": "appkit plugin sync --write --silent",
-    "typegen": "DATABRICKS_APP_PORT=${DATABRICKS_APP_PORT:-8000} DATABRICKS_CONFIG_FILE=${DATABRICKS_CONFIG_FILE:-../../.databrickscfg.local} DATABRICKS_CONFIG_PROFILE=${DATABRICKS_CONFIG_PROFILE:-codex-file} DATABRICKS_WAREHOUSE_ID=${DATABRICKS_WAREHOUSE_ID:-a0894632bfd69ff2} appkit generate-types",
+    "typegen": "DATABRICKS_APP_PORT=${DATABRICKS_APP_PORT:-8000} DATABRICKS_CONFIG_PROFILE=${DATABRICKS_CONFIG_PROFILE:-affordability-friction-planner} DATABRICKS_WAREHOUSE_ID=${DATABRICKS_WAREHOUSE_ID:-a0894632bfd69ff2} appkit generate-types",
     "setup": "appkit setup --write"
   },
   "keywords": [],
