@@ -1,0 +1,41 @@
+@import "@databricks/appkit-ui/styles.css";
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.986 0.01 140);
+  --foreground: oklch(0.2 0.02 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 240);
+  --primary: oklch(0.52 0.12 165);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.955 0.02 120);
+  --secondary-foreground: oklch(0.2 0.02 240);
+  --muted: oklch(0.962 0.01 150);
+  --muted-foreground: oklch(0.48 0.02 245);
+  --accent: oklch(0.93 0.04 75);
+  --accent-foreground: oklch(0.2 0.02 240);
+  --destructive: oklch(0.62 0.22 24);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.58 0.13 165);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.78 0.14 84);
+  --warning-foreground: oklch(0.24 0.03 240);
+  --border: oklch(0.9 0.01 160);
+  --input: oklch(0.9 0.01 160);
+  --ring: oklch(0.52 0.12 165);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background:
+    linear-gradient(180deg, rgba(244, 248, 246, 0.96), rgba(255, 255, 255, 1)),
+    linear-gradient(135deg, rgba(18, 115, 96, 0.05), transparent 30%, rgba(217, 119, 6, 0.04));
+  color: var(--foreground);
+}

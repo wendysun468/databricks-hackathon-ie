@@ -1,0 +1,15 @@
+bundle:
+  name: affordability-friction-planner
+
+resources:
+  apps:
+    app:
+      name: "affordability-friction-planner"
+      description: "Care friction planner for NGOs and public health teams"
+      source_code_path: ./
+
+targets:
+  default:
+    default: true
+    workspace:
+      host: https://dbc-d71b1eb4-7457.cloud.databricks.com
