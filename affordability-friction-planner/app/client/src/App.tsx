@@ -18,6 +18,7 @@ import { bandLabel, sampleScenarios } from './lib/careGap';
 import {
   buildLiveCareGapScenarios,
   buildLiveSnapshotSummary,
+  evidenceBandLabel,
   type LiveCareGapScenario,
   isMaternalRecord,
   pickString,
@@ -318,6 +319,7 @@ export default function App() {
                         <MiniScore label="Score" value={String(scenario.total)} />
                         <MiniScore label="Travel" value={`${scenario.travelMinutes} min`} />
                         <MiniScore label="Trust" value={scenario.trustStrength} />
+                        <MiniScore label="Evidence" value={evidenceBandLabel(scenario.trustStrength)} />
                         <MiniScore label="Why" value={scenario.summary} />
                       </div>
                       {isLiveScenario(scenario) ? (

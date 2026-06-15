@@ -5,8 +5,8 @@ export type UnknownRow = Record<string, unknown>;
 const FIELD_CANDIDATES = {
   facilityName: ['facility_name', 'facilityname', 'name', 'hospital_name', 'provider_name'],
   district: ['district', 'district_name', 'districtname'],
-  city: ['city', 'town', 'locality'],
-  state: ['state', 'province'],
+  city: ['city', 'town', 'locality', 'address_city'],
+  state: ['state', 'province', 'state_ut', 'statename', 'address_stateorregion', 'address_stateOrRegion'],
   postcode: ['postcode', 'pincode', 'postal_code', 'postalcode', 'zip'],
   latitude: ['latitude', 'lat', 'facility_latitude', 'approx_latitude'],
   longitude: ['longitude', 'lon', 'lng', 'facility_longitude', 'approx_longitude'],
@@ -126,10 +126,16 @@ export function deriveEvidenceStrength(row: UnknownRow): EvidenceStrength {
     pickString(row, FIELD_CANDIDATES.sourceUrls),
   ].filter(Boolean);
 
-  const richFields = snippets.filter((snippet) => snippet.length >= 18).length;
+  const sourceUrls = pickStringList(row, FIELD_CANDIDATES.sourceUrls);
+  const hasProvenance = sourceUrls.length > 0;
+  const hasOperationalDetail =
+    Boolean(pickString(row, ['capability', 'capabilities'])) ||
+    Boolean(pickString(row, ['procedure', 'procedures'])) ||
+    Boolean(pickString(row, ['equipment']));
+  const richTextFields = snippets.filter((snippet) => snippet.length >= 18 && !snippet.startsWith('http')).length;
 
-  if (snippets.length >= 4 && richFields >= 2) return 'strong';
-  if (snippets.length >= 2) return 'partial';
+  if (hasProvenance && hasOperationalDetail && richTextFields >= 2) return 'strong';
+  if ((hasProvenance && richTextFields >= 1) || (hasOperationalDetail && snippets.length >= 2)) return 'partial';
   if (snippets.length >= 1) return 'weak';
   return 'none';
 }
@@ -142,6 +148,70 @@ function keyFromRow(row: UnknownRow) {
     pickString(row, FIELD_CANDIDATES.postcode) ||
     'Unknown geography'
   );
+}
+
+function addKey(target: Set<string>, value: string) {
+  const normalized = normalizeKey(value);
+  if (normalized) target.add(normalized);
+}
+
+function buildLocationKeys(row: UnknownRow) {
+  const district = pickString(row, FIELD_CANDIDATES.district);
+  const state = pickString(row, FIELD_CANDIDATES.state);
+  const city = pickString(row, FIELD_CANDIDATES.city);
+  const postcode = pickString(row, FIELD_CANDIDATES.postcode);
+  const keys = new Set<string>();
+
+  if (district && state) addKey(keys, `${district} ${state}`);
+  if (city && state) addKey(keys, `${city} ${state}`);
+  if (postcode) addKey(keys, postcode);
+
+  return [...keys];
+}
+
+function rowIdentity(row: UnknownRow) {
+  const latitude = getLatitude(row);
+  const longitude = getLongitude(row);
+  return [
+    pickString(row, ['unique_id', 'source_content_id', 'source_ids', 'pincode']),
+    pickString(row, FIELD_CANDIDATES.facilityName),
+    pickString(row, FIELD_CANDIDATES.district),
+    pickString(row, FIELD_CANDIDATES.city),
+    pickString(row, FIELD_CANDIDATES.state),
+    pickString(row, FIELD_CANDIDATES.postcode),
+    latitude == null ? '' : String(latitude),
+    longitude == null ? '' : String(longitude),
+  ]
+    .filter(Boolean)
+    .join('::');
+}
+
+function uniqueRows(rows: UnknownRow[]) {
+  const seen = new Set<string>();
+  const output: UnknownRow[] = [];
+
+  for (const row of rows) {
+    const identity = rowIdentity(row) || JSON.stringify(row);
+    if (seen.has(identity)) continue;
+    seen.add(identity);
+    output.push(row);
+  }
+
+  return output;
+}
+
+function buildLookup(rows: UnknownRow[]) {
+  const lookup = new Map<string, UnknownRow[]>();
+
+  for (const row of rows) {
+    for (const key of buildLocationKeys(row)) {
+      const current = lookup.get(key) ?? [];
+      current.push(row);
+      lookup.set(key, current);
+    }
+  }
+
+  return lookup;
 }
 
 function numericRowsByPattern(row: UnknownRow, patterns: RegExp[]) {
@@ -274,36 +344,33 @@ export function buildLiveCareGapScenarios(bundle: {
 }) {
   const maternalFacilities = bundle.facilities.filter((row) => isMaternalRecord(row));
   const sourceFacilities = maternalFacilities.length ? maternalFacilities : bundle.facilities;
-
-  const facilityGroups = new Map<string, UnknownRow[]>();
-  for (const row of sourceFacilities) {
-    const key = keyFromRow(row);
-    const current = facilityGroups.get(key) ?? [];
-    current.push(row);
-    facilityGroups.set(key, current);
-  }
-
-  const districtLookup = new Map<string, UnknownRow[]>();
-  for (const row of bundle.districts) {
-    const key = keyFromRow(row);
-    const current = districtLookup.get(key) ?? [];
-    current.push(row);
-    districtLookup.set(key, current);
-  }
-
-  const pincodeLookup = new Map<string, UnknownRow[]>();
-  for (const row of bundle.pincodes) {
-    const key = keyFromRow(row);
-    const current = pincodeLookup.get(key) ?? [];
-    current.push(row);
-    pincodeLookup.set(key, current);
-  }
+  const facilityLookup = buildLookup(sourceFacilities);
+  const districtLookup = buildLookup(bundle.districts);
+  const pincodeLookup = buildLookup(bundle.pincodes);
 
   const scenarios: LiveCareGapScenario[] = [];
 
-  for (const [districtLabel, facilities] of facilityGroups) {
-    const districtRows = districtLookup.get(districtLabel) ?? [];
-    const pincodeRows = pincodeLookup.get(districtLabel) ?? [];
+  const primaryDistrictRows = bundle.districts.length ? bundle.districts : sourceFacilities;
+  const primaryRows = primaryDistrictRows.length ? primaryDistrictRows : bundle.pincodes;
+
+  for (const primaryRow of primaryRows) {
+    const districtKeys = buildLocationKeys(primaryRow);
+    const facilities = uniqueRows(
+      districtKeys.flatMap((key) => facilityLookup.get(key) ?? []),
+    );
+    const districtRows = uniqueRows(
+      districtKeys.flatMap((key) => districtLookup.get(key) ?? []),
+    );
+    const pincodeRows = uniqueRows(
+      districtKeys.flatMap((key) => pincodeLookup.get(key) ?? []),
+    );
+    const districtLabel =
+      pickString(primaryRow, FIELD_CANDIDATES.district) ||
+      pickString(primaryRow, FIELD_CANDIDATES.city) ||
+      pickString(primaryRow, FIELD_CANDIDATES.state) ||
+      pickString(primaryRow, FIELD_CANDIDATES.postcode) ||
+      pickString(primaryRow, FIELD_CANDIDATES.facilityName) ||
+      keyFromRow(primaryRow);
     const trustPenaltyAverage =
       facilities.reduce((sum, row) => {
         const strength = deriveEvidenceStrength(row);
@@ -325,7 +392,8 @@ export function buildLiveCareGapScenarios(bundle: {
     const outOfPocketValue = pickNumber(districtRow, FIELD_CANDIDATES.outOfPocket);
     const insuranceValue = pickNumber(districtRow, FIELD_CANDIDATES.insurance);
     const burdenValue = scoreBurdenFromRow(districtRow);
-    const facilityDensity = facilities.length / Math.max(1, pincodeRows.length || districtRows.length || 1);
+    const geographyBase = Math.max(1, pincodeRows.length || districtRows.length || 1);
+    const facilityDensity = facilities.length / geographyBase;
     const travelMinutes = estimateTravelMinutes(districtRows, facilities, pincodeRows);
 
     const scored = scoreCareGap({
@@ -353,7 +421,7 @@ export function buildLiveCareGapScenarios(bundle: {
       summary: scored.reasons[0],
       sourceCount: facilities.length,
       districtLabel,
-      exampleFacility: pickString(facilities[0], FIELD_CANDIDATES.facilityName) || districtLabel,
+      exampleFacility: pickString(facilities[0] ?? districtRow, FIELD_CANDIDATES.facilityName) || districtLabel,
     });
   }
 

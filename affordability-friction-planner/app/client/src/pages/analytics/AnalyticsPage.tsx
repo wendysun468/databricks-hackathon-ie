@@ -4,6 +4,7 @@ import { bandLabel } from '../../lib/careGap';
 import {
   buildLiveCareGapScenarios,
   buildLiveSnapshotSummary,
+  evidenceBandLabel,
   toRow,
   type UnknownRow,
 } from '../../lib/databricksData';
@@ -96,6 +97,7 @@ export function AnalyticsPage() {
                   <ScoreRow label="Score" value={String(highest.total)} />
                   <ScoreRow label="Travel" value={`${highest.travelMinutes} min`} />
                   <ScoreRow label="Trust" value={highest.trustStrength} />
+                  <ScoreRow label="Evidence" value={evidenceBandLabel(highest.trustStrength)} />
                   <ScoreRow label="Rows" value={`${highest.sourceCount}`} />
                 </div>
               </>
@@ -138,6 +140,7 @@ export function AnalyticsPage() {
                 <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                   <ScoreRow label="Score" value={String(scenario.total)} />
                   <ScoreRow label="Why" value={scenario.summary} />
+                  <ScoreRow label="Evidence" value={evidenceBandLabel(scenario.trustStrength)} />
                 </div>
                 <div className="mt-3 text-xs uppercase tracking-wide text-muted-foreground">
                   Example facility: {scenario.exampleFacility}

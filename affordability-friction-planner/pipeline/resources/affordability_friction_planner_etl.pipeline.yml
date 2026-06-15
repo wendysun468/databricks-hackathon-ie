@@ -1,0 +1,19 @@
+resources:
+  pipelines:
+    affordability_friction_planner_etl:
+      name: affordability_friction_planner_etl
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: true
+      continuous: false
+      development: true
+      channel: PREVIEW
+      configuration:
+        pipelines.numUpdateRetryAttempts: "0"
+        pipelines.maxFlowRetryAttempts: "0"
+      libraries:
+        - glob:
+            include: ../src/affordability_friction_planner_etl/**
+      environment:
+        dependencies:
+          - --editable ${workspace.file_path}

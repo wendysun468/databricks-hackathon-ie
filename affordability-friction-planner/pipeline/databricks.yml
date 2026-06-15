@@ -1,0 +1,20 @@
+bundle:
+  name: affordability-friction-planner-etl
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    default: workspace
+  schema:
+    default: affordability_friction_planner
+
+targets:
+  dev:
+    default: true
+    workspace:
+      host: https://dbc-d71b1eb4-7457.cloud.databricks.com
+    variables:
+      catalog: workspace
+      schema: affordability_friction_planner

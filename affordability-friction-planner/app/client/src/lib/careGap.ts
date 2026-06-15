@@ -41,6 +41,14 @@ function clamp(value: number, min = 0, max = 100) {
   return Math.min(max, Math.max(min, value));
 }
 
+function normalizeOutOfPocket(value: number | null, fallback = 45) {
+  if (value == null || !Number.isFinite(value)) return fallback;
+  if (value >= 0 && value <= 1) return clamp(value * 100);
+  if (value <= 100) return clamp(value);
+  const scaled = (Math.log10(value + 1) / 4) * 100;
+  return clamp(scaled);
+}
+
 export function scoreTravel(minutes: number) {
   if (!Number.isFinite(minutes)) return 0;
   if (minutes <= 15) return 8;
@@ -55,9 +63,9 @@ export function scoreTrust(trustStrength: EvidenceStrength) {
 }
 
 export function scoreAffordability(outOfPocketRatio: number, insuranceCoveragePct: number) {
-  const oop = clamp(outOfPocketRatio * 100);
+  const oop = normalizeOutOfPocket(outOfPocketRatio);
   const insuranceRelief = clamp(100 - insuranceCoveragePct);
-  return Math.round(oop * 0.7 + insuranceRelief * 0.3);
+  return Math.round(oop * 0.65 + insuranceRelief * 0.35);
 }
 
 export function scoreBurden(burdenScore: number) {
