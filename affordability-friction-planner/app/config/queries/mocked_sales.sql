@@ -1,21 +1,13 @@
 {{if .plugins.analytics -}}
--- @param max_month_num INT
+-- @param max_rank INT
 WITH mock_data AS (
-  SELECT 'January' AS month, 1 AS month_num, 65000 AS revenue, 45000 AS expenses, 850 AS customers
-  UNION ALL SELECT 'February', 2, 72000, 48000, 920
-  UNION ALL SELECT 'March', 3, 78000, 52000, 1050
-  UNION ALL SELECT 'April', 4, 85000, 55000, 1180
-  UNION ALL SELECT 'May', 5, 92000, 58000, 1320
-  UNION ALL SELECT 'June', 6, 88000, 54000, 1250
-  UNION ALL SELECT 'July', 7, 95000, 60000, 1380
-  UNION ALL SELECT 'August', 8, 89000, 56000, 1290
-  UNION ALL SELECT 'September', 9, 82000, 53000, 1150
-  UNION ALL SELECT 'October', 10, 87000, 55000, 1220
-  UNION ALL SELECT 'November', 11, 93000, 59000, 1340
-  UNION ALL SELECT 'December', 12, 98000, 62000, 1420
+  SELECT 'Purnia' AS district_name, 1 AS rank, 91 AS care_gap_score, 'critical' AS band
+  UNION ALL SELECT 'Rural referral belt', 2, 88, 'critical'
+  UNION ALL SELECT 'Kolkata fringe', 3, 44, 'moderate'
+  UNION ALL SELECT 'Coastal access zone', 4, 32, 'low'
 )
 SELECT *
 FROM mock_data
-WHERE month_num <= :max_month_num
-ORDER BY month_num;
+WHERE rank <= :max_rank
+ORDER BY rank;
 {{- end}}

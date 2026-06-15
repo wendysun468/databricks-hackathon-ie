@@ -12,6 +12,7 @@ import {
 } from '@databricks/appkit-ui/react';
 import type { ReactNode } from 'react';
 import { MapPinned, ShieldAlert, WalletCards, Waves } from 'lucide-react';
+import { bandLabel, sampleScenarios } from './lib/careGap';
 
 function Metric({
   icon,
@@ -161,7 +162,7 @@ export default function App() {
 
           <TabsContent value="model" className="grid gap-4 lg:grid-cols-2">
             <SectionCard
-              title="Scoring ideas"
+              title="Scoring logic"
               description="Keep the model interpretable and easy to defend."
             >
               <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
@@ -173,15 +174,30 @@ export default function App() {
             </SectionCard>
 
             <SectionCard
-              title="What not to claim"
-              description="Avoid overpromising with weak data."
+              title="Worked examples"
+              description="These are the first scoring scenarios for the project."
             >
-              <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-                <li>Live staffing or appointment availability</li>
-                <li>Exact treatment pricing</li>
-                <li>Verified accreditation or licensing</li>
-                <li>Real-time catchment population</li>
-              </ul>
+              <div className="space-y-3">
+                {sampleScenarios.map((scenario) => (
+                  <div key={scenario.districtName} className="rounded-xl border border-slate-200 p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="font-medium text-foreground">{scenario.districtName}</div>
+                        <div className="text-sm text-muted-foreground">{scenario.specialty}</div>
+                      </div>
+                      <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
+                        {bandLabel(scenario.band)} gap
+                      </Badge>
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                      <MiniScore label="Score" value={String(scenario.total)} />
+                      <MiniScore label="Travel" value={`${scenario.travelMinutes} min`} />
+                      <MiniScore label="Trust" value={scenario.trustStrength} />
+                      <MiniScore label="Why" value={scenario.summary} />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </SectionCard>
           </TabsContent>
 
@@ -221,6 +237,15 @@ function MiniStat({ label, value }: { label: string; value: string }) {
     <div className="rounded-xl border border-white/10 bg-white/5 p-3">
       <div className="text-xs uppercase tracking-wide text-slate-400">{label}</div>
       <div className="mt-1 text-base font-semibold text-slate-50">{value}</div>
+    </div>
+  );
+}
+
+function MiniScore({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-slate-50 p-2">
+      <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="mt-1 text-sm text-foreground">{value}</div>
     </div>
   );
 }

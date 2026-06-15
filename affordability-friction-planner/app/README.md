@@ -11,6 +11,14 @@ affordability, and evidence strength all work against access.
 - affordability pressure by district
 - persisted shortlist and notes in Lakebase
 
+## Environment variables
+
+Set these in `.env` when running locally:
+
+- `DATABRICKS_WAREHOUSE_ID` for analytics queries
+- `LAKEBASE_ENDPOINT` for the Lakebase plugin
+- `PGHOST` and `PGDATABASE` if you connect to Lakebase directly
+
 ## What is in the scaffold
 
 - `client/` React frontend

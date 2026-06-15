@@ -1,5 +1,8 @@
-import { createApp } from '@databricks/appkit';
+import { analytics, createApp, lakebase } from '@databricks/appkit';
 
 createApp({
-  plugins: [],
+  plugins: [
+    ...(process.env.DATABRICKS_WAREHOUSE_ID ? [analytics()] : []),
+    ...(process.env.LAKEBASE_ENDPOINT ? [lakebase()] : []),
+  ],
 }).catch(console.error);
